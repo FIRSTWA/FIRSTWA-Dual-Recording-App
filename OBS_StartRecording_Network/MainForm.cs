@@ -79,12 +79,13 @@ namespace FIRSTWA_Recorder
 
         Match[] matches;
 
-        string strYear = "2020";
+        string strYear = "2022";
         IPAddress strIPAddressPC = @"192.168.100.70";
         IPAddress strIPAddressPROGRAM = @"192.168.100.35";
         IPAddress strIPAddressWIDE = @"192.168.100.34";
         TCPPort strPortPROGRAM = "9993";
         TCPPort strPortWIDE = "9993";
+        string strBaseDir = "c:\\FIRSTWARecorder";
 
         MapMono progChannels = MapMono.None;
         MapMono wideChannels = MapMono.None;
@@ -98,10 +99,10 @@ namespace FIRSTWA_Recorder
         RegistryKeyName regProgAudio = "PROGRAM_AudioChannel";
         RegistryKeyName regWideAudio = "WIDE_AudioChannel";
         RegistryKeyName regAPIKey = "apikey";
+        // 09659FjTZaWXf1rKVnPneSZlRUGSN5vq9VAH467lSZpxEZ69OtHy4YvvKB9qWbzueSu9
+        RegistryKeyName regBaseDir = "basedir";
         List<RegistryKeyName> registryKeyNames = new List<FileName>();
-
-        int progress = 0;
-
+        int progress=0;
         HyperDeck hdProgram, hdWide;
 
         string matchNameProgram = "";
@@ -148,6 +149,7 @@ namespace FIRSTWA_Recorder
             registryKeyNames.Add(regPC);
             registryKeyNames.Add(regProgAudio);
             registryKeyNames.Add(regWideAudio);
+            registryKeyNames.Add(regBaseDir);
 
             logger.Info("... Reading form variables from registry");
             try
@@ -164,6 +166,7 @@ namespace FIRSTWA_Recorder
                 strIPAddressPC = ReadRegistryKey(regPC);
                 strIPAddressPROGRAM = ReadRegistryKey(regPROGRAM);
                 strIPAddressWIDE = ReadRegistryKey(regWIDE);
+                strBaseDir = ReadRegistryKey(regBaseDir);
 
                 Enum.TryParse(ReadRegistryKey(regWideAudio), out MapMono _wideChannels);
                 Enum.TryParse(ReadRegistryKey(regProgAudio), out MapMono _progChannels);
@@ -209,12 +212,19 @@ namespace FIRSTWA_Recorder
             eventDistrict = JsonConvert.DeserializeObject<List<District>>(tbaContent);
             eventDetails = JsonConvert.DeserializeObject<List<Event>>(tbaContent);
 
-            eventDetails.ForEach(x => comboEventName.Items.Add((x.week + 1) + " - " + x.first_event_code + " - " + x.location_name));
+            eventDetails.ForEach(x => comboEventName.Items.Add((x.week + 1) + " - " + x.first_event_code + " - " + x.short_name));
             comboEventName.Sorted = true;
             comboEventName.Items.Add("Custom Event");
 
+            logger.Info("... Creating Base directory");
+            
+            if (!Directory.Exists(strBaseDir))
+            {
+                Directory.CreateDirectory(strBaseDir);
+            }
+
             logger.Info("... Creating Temp directory");
-            tempFolder = Path.GetTempPath() + "FIRSTWA-Recorder\\";
+            tempFolder = strBaseDir + "\\Temp";
             if (!Directory.Exists(tempFolder))
             {
                 Directory.CreateDirectory(tempFolder);
@@ -942,10 +952,41 @@ namespace FIRSTWA_Recorder
 
             progress++;
             SetProgress(progress);
-            URI wideURI = string.Format("ftp://{0}/1", strIPAddressWIDE);
-            FilePath widePath = string.Format("ftp://{0}/2019/{1}/WIDE", strIPAddressPC, currentEvent.short_name);
 
-            CreateEventDirectory(widePath);
+
+            //
+            //  Check/Create directory structure in BaseDir
+            //
+
+            string strYearDir = System.IO.Path.Combine(strBaseDir, strYear);
+            string strEventDir = System.IO.Path.Combine(strYearDir, currentEvent.short_name);
+            string strWideDir = System.IO.Path.Combine(strEventDir, "WIDE");
+
+            
+
+            if (!Directory.Exists(strYearDir))
+            {
+                logger.Info("... Creating " + strYearDir);
+                Directory.CreateDirectory(strYearDir);
+            }
+            if (!Directory.Exists(strEventDir))
+            {
+                logger.Info("... Creating " + strEventDir);
+                Directory.CreateDirectory(strEventDir);
+            }
+            if (!Directory.Exists(strWideDir))
+            {
+                logger.Info("... Creating " + strWideDir);
+                Directory.CreateDirectory(strWideDir);
+            }
+
+            URI wideURI = string.Format("ftp://{0}/1", strIPAddressWIDE);
+            FilePath widePath = string.Format("ftp://{0}/{1}/{2}/WIDE", strIPAddressPC,strYear, currentEvent.short_name);
+
+            // Changed the code to make directory structure without FTP program
+            // CreateEventDirectory(widePath);   
+
+
             List<string> directories = GetFTPFiles(wideURI);
             List<DateTime> timestamps = new List<DateTime>();
             List<string> fileNames = new List<string>();
@@ -979,7 +1020,7 @@ namespace FIRSTWA_Recorder
             lblReportA.Invoke((Action)(()=> { lblReportA.Text = "Finding Video"; }));
             logger.Info("... Finding Wide source file");
 
-            string tempFile = tempFolder + fileNameWide;
+            string tempFile = tempFolder +"\\"+ fileNameWide;
 
             int matchIndex = -1;
             int most_recent = -1;
@@ -1006,13 +1047,18 @@ namespace FIRSTWA_Recorder
             logger.Info("... Wide worker downloading source");
             DownloadFileFTP(wideURI + "/" + fileNames[matchIndex], tempFile);
 
-            lblReportA.Invoke((Action)(()=> { lblReportA.Text = "Converting Video"; }));
-            logger.Info("... Wide worker processing");
-            ConvertVideo(tempFile, wideChannels);
+            //lblReportA.Invoke((Action)(()=> { lblReportA.Text = "Converting Video"; }));
+            //logger.Info("... Wide worker processing");
+            //ConvertVideo(tempFile, wideChannels);
 
-            lblReportA.Invoke((Action)(()=> { lblReportA.Text = "Uploading Video"; }));
-            logger.Info("... Wide worker uploading");
-            UploadFileFTP(widePath + "/" + fileNameWide, tempFile);
+            // lblReportA.Invoke((Action)(()=> { lblReportA.Text = "Uploading Video"; }));
+            // logger.Info("... Wide worker uploading");
+            // UploadFileFTP(widePath + "/" + fileNameWide, tempFile);
+
+            // Now move the file from the temp directory to the final resting place
+
+            string strDestPath = System.IO.Path.Combine(strWideDir, fileNameWide);
+            System.IO.File.Move(tempFile, strDestPath);
 
             logger.Info("- Done: Wide");
             lblReportA.Invoke((Action)(()=> { lblReportA.Text = "Done"; }));
@@ -1038,7 +1084,7 @@ namespace FIRSTWA_Recorder
             progress++;
             SetProgress(progress);
             URI programURI = string.Format("ftp://{0}/1", strIPAddressPROGRAM);
-            FilePath programPath = string.Format("ftp://{0}/2019/{1}/PROGRAM", strIPAddressPC, currentEvent.short_name);
+            FilePath programPath = string.Format("ftp://{0}/{1}/{2}/PROGRAM", strIPAddressPC,strYear, currentEvent.short_name);
 
             CreateEventDirectory(programPath);
             List<string> directories = GetFTPFiles(programURI);
@@ -1075,7 +1121,7 @@ namespace FIRSTWA_Recorder
             logger.Info("... Finding Program source file");
 
 
-            string tempFile = tempFolder + fileNameProgram;
+            string tempFile = tempFolder +"\\"+ fileNameProgram;
 
             int matchIndex = 0;
             int most_recent = -1;
@@ -1103,9 +1149,9 @@ namespace FIRSTWA_Recorder
             lblReportB.Invoke((Action)(()=> { lblReportB.Text = "Downloading Video"; }));
             DownloadFileFTP(programURI + "/" + fileNames[matchIndex], tempFile);
 
-            logger.Info("... Program worker processing");
-            lblReportB.Invoke((Action)(()=> { lblReportB.Text = "Converting Video"; }));
-            ConvertVideo(tempFile, progChannels);
+            //logger.Info("... Program worker processing");
+            //lblReportB.Invoke((Action)(()=> { lblReportB.Text = "Converting Video"; }));
+            //onvertVideo(tempFile, progChannels);
 
             logger.Info("... Program worker uploading");
             lblReportB.Invoke((Action)(()=> { lblReportB.Text = "Uploading Video"; }));

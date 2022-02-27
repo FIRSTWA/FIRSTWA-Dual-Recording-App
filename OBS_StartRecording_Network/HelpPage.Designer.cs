@@ -30,6 +30,8 @@
         {
             this.label1 = new System.Windows.Forms.Label();
             this.button1 = new System.Windows.Forms.Button();
+            this.lblSoftwareVersion = new System.Windows.Forms.Label();
+            this.lblVersion = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // label1
@@ -45,7 +47,7 @@
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(278, 96);
+            this.button1.Location = new System.Drawing.Point(267, 175);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(75, 43);
             this.button1.TabIndex = 1;
@@ -53,11 +55,32 @@
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
+            // lblSoftwareVersion
+            // 
+            this.lblSoftwareVersion.AutoSize = true;
+            this.lblSoftwareVersion.Location = new System.Drawing.Point(18, 112);
+            this.lblSoftwareVersion.Name = "lblSoftwareVersion";
+            this.lblSoftwareVersion.Size = new System.Drawing.Size(87, 13);
+            this.lblSoftwareVersion.TabIndex = 2;
+            this.lblSoftwareVersion.Text = "Software Version";
+            this.lblSoftwareVersion.Click += new System.EventHandler(this.label2_Click);
+            // 
+            // lblVersion
+            // 
+            this.lblVersion.AutoSize = true;
+            this.lblVersion.Location = new System.Drawing.Point(112, 112);
+            this.lblVersion.Name = "lblVersion";
+            this.lblVersion.Size = new System.Drawing.Size(35, 13);
+            this.lblVersion.TabIndex = 3;
+            this.lblVersion.Text = "label2";
+            // 
             // HelpPage
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(625, 151);
+            this.ClientSize = new System.Drawing.Size(625, 246);
+            this.Controls.Add(this.lblVersion);
+            this.Controls.Add(this.lblSoftwareVersion);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.label1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
@@ -74,5 +97,7 @@
 
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Label lblSoftwareVersion;
+        private System.Windows.Forms.Label lblVersion;
     }
 }
