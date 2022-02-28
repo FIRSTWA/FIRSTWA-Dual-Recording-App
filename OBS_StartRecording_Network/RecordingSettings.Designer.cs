@@ -39,12 +39,14 @@
             this.txtIPAddressPC = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
             this.numYear = new System.Windows.Forms.NumericUpDown();
+            this.label4 = new System.Windows.Forms.Label();
+            this.txtBaseDir = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.numYear)).BeginInit();
             this.SuspendLayout();
             // 
             // btnAccept
             // 
-            this.btnAccept.Location = new System.Drawing.Point(8, 122);
+            this.btnAccept.Location = new System.Drawing.Point(12, 182);
             this.btnAccept.Name = "btnAccept";
             this.btnAccept.Size = new System.Drawing.Size(75, 23);
             this.btnAccept.TabIndex = 3;
@@ -55,7 +57,7 @@
             // btnCancel
             // 
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point(165, 122);
+            this.btnCancel.Location = new System.Drawing.Point(161, 182);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 23);
             this.btnCancel.TabIndex = 4;
@@ -81,10 +83,14 @@
             this.label5.TabIndex = 1;
             this.label5.Text = "Wide IP Address:";
             // 
+            // folderBrowserDialog1
+            // 
+            this.folderBrowserDialog1.HelpRequest += new System.EventHandler(this.FolderBrowserDialog1_HelpRequest);
+            // 
             // txtIPAddressPROGRAM
             // 
             this.txtIPAddressPROGRAM.Location = new System.Drawing.Point(121, 36);
-            this.txtIPAddressPROGRAM.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.txtIPAddressPROGRAM.Margin = new System.Windows.Forms.Padding(2);
             this.txtIPAddressPROGRAM.Name = "txtIPAddressPROGRAM";
             this.txtIPAddressPROGRAM.Size = new System.Drawing.Size(121, 20);
             this.txtIPAddressPROGRAM.TabIndex = 9;
@@ -93,7 +99,7 @@
             // txtIPAddressWIDE
             // 
             this.txtIPAddressWIDE.Location = new System.Drawing.Point(121, 62);
-            this.txtIPAddressWIDE.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.txtIPAddressWIDE.Margin = new System.Windows.Forms.Padding(2);
             this.txtIPAddressWIDE.Name = "txtIPAddressWIDE";
             this.txtIPAddressWIDE.Size = new System.Drawing.Size(121, 20);
             this.txtIPAddressWIDE.TabIndex = 9;
@@ -111,7 +117,7 @@
             // txtIPAddressPC
             // 
             this.txtIPAddressPC.Location = new System.Drawing.Point(121, 88);
-            this.txtIPAddressPC.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.txtIPAddressPC.Margin = new System.Windows.Forms.Padding(2);
             this.txtIPAddressPC.Name = "txtIPAddressPC";
             this.txtIPAddressPC.Size = new System.Drawing.Size(121, 20);
             this.txtIPAddressPC.TabIndex = 9;
@@ -148,13 +154,31 @@
             0,
             0});
             // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(12, 118);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(79, 13);
+            this.label4.TabIndex = 12;
+            this.label4.Text = "Base Directory:";
+            // 
+            // txtBaseDir
+            // 
+            this.txtBaseDir.Location = new System.Drawing.Point(121, 118);
+            this.txtBaseDir.Name = "txtBaseDir";
+            this.txtBaseDir.Size = new System.Drawing.Size(121, 20);
+            this.txtBaseDir.TabIndex = 13;
+            // 
             // RecordingSettings
             // 
             this.AcceptButton = this.btnAccept;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
-            this.ClientSize = new System.Drawing.Size(248, 155);
+            this.ClientSize = new System.Drawing.Size(248, 217);
+            this.Controls.Add(this.txtBaseDir);
+            this.Controls.Add(this.label4);
             this.Controls.Add(this.numYear);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.txtIPAddressPC);
@@ -188,5 +212,7 @@
         private System.Windows.Forms.TextBox txtIPAddressPC;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.NumericUpDown numYear;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.TextBox txtBaseDir;
     }
 }

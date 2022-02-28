@@ -231,7 +231,7 @@ namespace FIRSTWA_Recorder
             }
 
             logger.Info("... Initializing Settings Forms");
-            frmRecordingSetting = new RecordingSettings(strYear, strIPAddressPC, strIPAddressPROGRAM, strIPAddressWIDE);
+            frmRecordingSetting = new RecordingSettings(strYear, strIPAddressPC, strIPAddressPROGRAM, strIPAddressWIDE,strBaseDir);
             frmAudioSetting = new AudioSettings(wideChannels,progChannels);
 
             if (!Debugger.IsAttached)
@@ -267,6 +267,8 @@ namespace FIRSTWA_Recorder
             WriteRegistryKey(regWIDE, strIPAddressWIDE);
             WriteRegistryKey(regWideAudio, wideChannels.ToString());
             WriteRegistryKey(regProgAudio, progChannels.ToString());
+            WriteRegistryKey(regBaseDir, strBaseDir);
+
         }
 
         private void WriteRegistryKey(string key, string value)
@@ -1086,7 +1088,35 @@ namespace FIRSTWA_Recorder
             URI programURI = string.Format("ftp://{0}/1", strIPAddressPROGRAM);
             FilePath programPath = string.Format("ftp://{0}/{1}/{2}/PROGRAM", strIPAddressPC,strYear, currentEvent.short_name);
 
-            CreateEventDirectory(programPath);
+            //
+            //  Check/Create directory structure in BaseDir
+            //
+
+            string strYearDir = System.IO.Path.Combine(strBaseDir, strYear);
+            string strEventDir = System.IO.Path.Combine(strYearDir, currentEvent.short_name);
+            string strProgDir = System.IO.Path.Combine(strEventDir, "PROGRAM");
+
+
+
+            if (!Directory.Exists(strYearDir))
+            {
+                logger.Info("... Creating " + strYearDir);
+                Directory.CreateDirectory(strYearDir);
+            }
+            if (!Directory.Exists(strEventDir))
+            {
+                logger.Info("... Creating " + strEventDir);
+                Directory.CreateDirectory(strEventDir);
+            }
+            if (!Directory.Exists(strProgDir))
+            {
+                logger.Info("... Creating " + strProgDir);
+                Directory.CreateDirectory(strProgDir);
+            }
+
+            //    Old code CreateEventDirectory(programPath);
+
+
             List<string> directories = GetFTPFiles(programURI);
             List<DateTime> timestamps = new List<DateTime>();
             List<string> fileNames = new List<string>();
@@ -1153,9 +1183,14 @@ namespace FIRSTWA_Recorder
             //lblReportB.Invoke((Action)(()=> { lblReportB.Text = "Converting Video"; }));
             //onvertVideo(tempFile, progChannels);
 
-            logger.Info("... Program worker uploading");
-            lblReportB.Invoke((Action)(()=> { lblReportB.Text = "Uploading Video"; }));
-            UploadFileFTP(programPath + "/" + fileNameProgram, tempFile);
+            //; logger.Info("... Program worker uploading");
+            // lblReportB.Invoke((Action)(()=> { lblReportB.Text = "Uploading Video"; }));
+            // UploadFileFTP(programPath + "/" + fileNameProgram, tempFile);
+
+            // Now move the file from the temp directory to the final resting place
+
+            string strDestPath = System.IO.Path.Combine(strProgDir, fileNameProgram);
+            System.IO.File.Move(tempFile, strDestPath);
 
             logger.Info("- Done: Program");
             lblReportB.Invoke((Action)(()=> { lblReportB.Text = "Done"; }));
