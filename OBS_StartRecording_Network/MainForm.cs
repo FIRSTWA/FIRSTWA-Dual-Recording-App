@@ -181,6 +181,9 @@ namespace FIRSTWA_Recorder
                 MessageBox.Show("Initialized the registry keys.  Please check that the registry keys are correct.");
             }
 
+            // Insure that the base directory structure exists
+            CreateBaseDirectoryStructure();
+
             logger.Info("... Reading TBA API key from registry");
             tbaRequest = new RestRequest($"district/" + strYear + "pnw/events", Method.GET);
             TBAKEY = ReadRegistryKey(regAPIKey);
@@ -216,20 +219,7 @@ namespace FIRSTWA_Recorder
             comboEventName.Sorted = true;
             comboEventName.Items.Add("Custom Event");
 
-            logger.Info("... Creating Base directory");
-            
-            if (!Directory.Exists(strBaseDir))
-            {
-                Directory.CreateDirectory(strBaseDir);
-            }
-
-            logger.Info("... Creating Temp directory");
-            tempFolder = strBaseDir + "\\Temp";
-            if (!Directory.Exists(tempFolder))
-            {
-                Directory.CreateDirectory(tempFolder);
-            }
-
+           
             logger.Info("... Initializing Settings Forms");
             frmRecordingSetting = new RecordingSettings(strYear, strIPAddressPC, strIPAddressPROGRAM, strIPAddressWIDE,strBaseDir);
             frmAudioSetting = new AudioSettings(wideChannels,progChannels);
@@ -244,6 +234,24 @@ namespace FIRSTWA_Recorder
             }
         }
 
+        public void CreateBaseDirectoryStructure()
+        {
+            logger.Info("... Creating Base directory" + strBaseDir);
+
+            if (!Directory.Exists(strBaseDir))
+            {
+                Directory.CreateDirectory(strBaseDir);
+            }
+
+            tempFolder = strBaseDir + "\\Temp";
+            logger.Info("... Creating Temp directory" + tempFolder);
+           
+            if (!Directory.Exists(tempFolder))
+            {
+                Directory.CreateDirectory(tempFolder);
+            }
+
+        }
         #region Registry
         private string ReadRegistryKey(string key)
         {
@@ -751,6 +759,10 @@ namespace FIRSTWA_Recorder
                 strIPAddressPROGRAM = frmRecordingSetting.IPAddressPROGRAM;
                 strIPAddressWIDE = frmRecordingSetting.IPAddressWIDE;
                 strIPAddressPC = frmRecordingSetting.IPAddressPC;
+                strBaseDir = frmRecordingSetting.BaseDir;
+
+                // It is possible that the base directory structure changed. Go make a new one if needed.
+                CreateBaseDirectoryStructure();
 
                 UpdateRegistryKeys();
             }
@@ -1003,6 +1015,11 @@ namespace FIRSTWA_Recorder
                 fileNames.Add(match.Groups[6].ToString());
             }
 
+            /*
+             * This code was walking the directory on the recorder deleting what was supposed to be old files. 
+             * There is an error in the logic because it doesn't handle the times correctly, causing this section
+             * of code to delete the newest recording if there are recordings from later times. So rolling over at noon, or with recordings from the previous day
+             * 
             if (directories.Count > 2)
             {
                 while (directories.Count > 2)
@@ -1015,6 +1032,7 @@ namespace FIRSTWA_Recorder
                     directories.RemoveAt(minTimstampIndex);
                 }
             }
+            */
             
             progress++;
             SetProgress(progress);
@@ -1044,7 +1062,7 @@ namespace FIRSTWA_Recorder
                 logger.Info("- Failed: Wide source file not found");
                 return;
             }
-
+            string strDestPath = System.IO.Path.Combine(strWideDir, fileNameWide);
             lblReportA.Invoke((Action)(()=> { lblReportA.Text = "Downloading Video"; }));
             logger.Info("... Wide worker downloading source");
             DownloadFileFTP(wideURI + "/" + fileNames[matchIndex], tempFile);
@@ -1058,17 +1076,26 @@ namespace FIRSTWA_Recorder
             // UploadFileFTP(widePath + "/" + fileNameWide, tempFile);
 
             // Now move the file from the temp directory to the final resting place
+                       
+            try
+            {
+                System.IO.File.Move(tempFile, strDestPath);
 
-            string strDestPath = System.IO.Path.Combine(strWideDir, fileNameWide);
-            System.IO.File.Move(tempFile, strDestPath);
+                // If that succeded, then remove the file from the HyperDeck
+                DeleteFTPFile(wideURI, fileNames[matchIndex]);
+
+            } catch 
+            {
+                string errorMessage = "Unable to move " + tempFile + " to directory " + strDestPath;
+                logger.Info(errorMessage);
+                lblReportA.Invoke((Action)(() => { lblReportA.Text = errorMessage; }));
+                return;
+            }
+
+  
 
             logger.Info("- Done: Wide");
             lblReportA.Invoke((Action)(()=> { lblReportA.Text = "Done"; }));
-
-            if ((wideFTPUploadFail || programFTPUploadFail) && !bgWorker_FTP_Wide.IsBusy)
-            {
-                MessageBox.Show("WARNING: The last match did not copy to the FTP folder!");
-            }
 
             ledWide.BackColor = Color.Green;
         }
@@ -1131,6 +1158,12 @@ namespace FIRSTWA_Recorder
                 fileNames.Add(match.Groups[6].ToString());
             }
 
+            /*
+             * This code was walking the directory on the recorder deleting what was supposed to be old files. 
+             * There is an error in the logic because it doesn't handle the times correctly, causing this section
+             * of code to delete the newest recording if there are recordings from later times. So rolling over at noon, or with recordings from the previous day
+             * 
+
             if (directories.Count > 2)
             {
                 while (directories.Count > 2)
@@ -1143,6 +1176,7 @@ namespace FIRSTWA_Recorder
                     directories.RemoveAt(minTimstampIndex);
                 }
             }
+            */
 
             progress++;
             SetProgress(progress);
@@ -1175,9 +1209,14 @@ namespace FIRSTWA_Recorder
                 return;
             }
 
-            logger.Info("... Program worker downloading source");
+            string strDestPath = System.IO.Path.Combine(strProgDir, fileNameProgram);
+
+            string programFullPath = programURI + "/" + fileNames[matchIndex];
+            logger.Info("... Program worker downloading source "+programFullPath +" to "+tempFile);
             lblReportB.Invoke((Action)(()=> { lblReportB.Text = "Downloading Video"; }));
-            DownloadFileFTP(programURI + "/" + fileNames[matchIndex], tempFile);
+            DownloadFileFTP(programFullPath, tempFile);
+          
+
 
             //logger.Info("... Program worker processing");
             //lblReportB.Invoke((Action)(()=> { lblReportB.Text = "Converting Video"; }));
@@ -1189,8 +1228,22 @@ namespace FIRSTWA_Recorder
 
             // Now move the file from the temp directory to the final resting place
 
-            string strDestPath = System.IO.Path.Combine(strProgDir, fileNameProgram);
-            System.IO.File.Move(tempFile, strDestPath);
+            
+
+            try
+            {
+                System.IO.File.Move(tempFile, strDestPath);
+
+                // If that succeded, then remove the file from the HyperDeck
+                DeleteFTPFile(programURI, fileNames[matchIndex]);
+            }
+            catch
+            {
+                string errorMessage = "Unable to move " + tempFile + " to directory " + strDestPath;
+                logger.Info(errorMessage);
+                lblReportA.Invoke((Action)(() => { lblReportA.Text = errorMessage; }));
+                return;
+            }
 
             logger.Info("- Done: Program");
             lblReportB.Invoke((Action)(()=> { lblReportB.Text = "Done"; }));
