@@ -37,6 +37,8 @@ namespace FIRSTWA_Recorder
             IPAddressWIDE = txtIPAddressWIDE.Text;
             IPAddressPC = txtIPAddressPC.Text;
             BaseDir = txtBaseDir.Text;
+
+            
        
             this.DialogResult = DialogResult.OK;
             this.Hide();
