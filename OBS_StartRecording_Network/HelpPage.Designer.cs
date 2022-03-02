@@ -70,9 +70,8 @@
             this.lblVersion.AutoSize = true;
             this.lblVersion.Location = new System.Drawing.Point(112, 112);
             this.lblVersion.Name = "lblVersion";
-            this.lblVersion.Size = new System.Drawing.Size(35, 13);
+            this.lblVersion.Size = new System.Drawing.Size(0, 13);
             this.lblVersion.TabIndex = 3;
-            this.lblVersion.Text = "label2";
             // 
             // HelpPage
             // 

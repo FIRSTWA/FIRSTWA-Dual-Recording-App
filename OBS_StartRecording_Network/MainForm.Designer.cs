@@ -258,8 +258,8 @@
             // version001ToolStripMenuItem
             // 
             this.version001ToolStripMenuItem.Name = "version001ToolStripMenuItem";
-            this.version001ToolStripMenuItem.Size = new System.Drawing.Size(93, 20);
-            this.version001ToolStripMenuItem.Text = "Version 2022.2";
+            this.version001ToolStripMenuItem.Size = new System.Drawing.Size(111, 20);
+            this.version001ToolStripMenuItem.Text = "Version 2022.0302";
             this.version001ToolStripMenuItem.Click += new System.EventHandler(this.version001ToolStripMenuItem_Click);
             // 
             // helpToolStripMenuItem

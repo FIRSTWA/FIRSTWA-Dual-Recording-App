@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28010.2036
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.32002.185
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FIRSTWA-Dual-Recording-App", "OBS_StartRecording_Network\FIRSTWA-Dual-Recording-App.csproj", "{BE060DF2-395E-4920-A648-73C727B520DB}"
+EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "FIRSTWADualRecordInstall", "FIRSTWADualRecordInstall\FIRSTWADualRecordInstall.vdproj", "{229822B5-468B-43FD-9B23-F47FA751643E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,11 +17,20 @@ Global
 		{BE060DF2-395E-4920-A648-73C727B520DB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BE060DF2-395E-4920-A648-73C727B520DB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BE060DF2-395E-4920-A648-73C727B520DB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{229822B5-468B-43FD-9B23-F47FA751643E}.Debug|Any CPU.ActiveCfg = Debug
+		{229822B5-468B-43FD-9B23-F47FA751643E}.Release|Any CPU.ActiveCfg = Release
+		{229822B5-468B-43FD-9B23-F47FA751643E}.Release|Any CPU.Build.0 = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8942E06A-B955-476F-BE7C-BA6C013C06A2}
+	EndGlobalSection
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|x86 = Debug|x86
+		Release|Any CPU = Release|Any CPU
+		Release|x86 = Release|x86
 	EndGlobalSection
 EndGlobal
