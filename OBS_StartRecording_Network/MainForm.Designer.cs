@@ -170,14 +170,12 @@
             // radioBtnCeremony
             // 
             this.radioBtnCeremony.AutoSize = true;
-            this.radioBtnCeremony.Enabled = false;
             this.radioBtnCeremony.Location = new System.Drawing.Point(300, 18);
             this.radioBtnCeremony.Name = "radioBtnCeremony";
             this.radioBtnCeremony.Size = new System.Drawing.Size(72, 17);
             this.radioBtnCeremony.TabIndex = 3;
             this.radioBtnCeremony.Text = "Ceremony";
             this.radioBtnCeremony.UseVisualStyleBackColor = true;
-            this.radioBtnCeremony.Visible = false;
             this.radioBtnCeremony.CheckedChanged += new System.EventHandler(this.radioBtnMatchType_CheckedChanged);
             // 
             // numMatchNumber
@@ -346,18 +344,19 @@
             // lblCeremonyTitle
             // 
             this.lblCeremonyTitle.AutoSize = true;
-            this.lblCeremonyTitle.Location = new System.Drawing.Point(264, 71);
+            this.lblCeremonyTitle.Location = new System.Drawing.Point(254, 70);
             this.lblCeremonyTitle.Name = "lblCeremonyTitle";
-            this.lblCeremonyTitle.Size = new System.Drawing.Size(30, 13);
+            this.lblCeremonyTitle.Size = new System.Drawing.Size(86, 13);
             this.lblCeremonyTitle.TabIndex = 10;
-            this.lblCeremonyTitle.Text = "Title:";
+            this.lblCeremonyTitle.Text = "Title Ceremony - ";
             this.lblCeremonyTitle.Visible = false;
+            this.lblCeremonyTitle.Click += new System.EventHandler(this.lblCeremonyTitle_Click);
             // 
             // txtCeremonyTitle
             // 
-            this.txtCeremonyTitle.Location = new System.Drawing.Point(300, 67);
+            this.txtCeremonyTitle.Location = new System.Drawing.Point(342, 67);
             this.txtCeremonyTitle.Name = "txtCeremonyTitle";
-            this.txtCeremonyTitle.Size = new System.Drawing.Size(78, 20);
+            this.txtCeremonyTitle.Size = new System.Drawing.Size(44, 20);
             this.txtCeremonyTitle.TabIndex = 8;
             this.txtCeremonyTitle.Visible = false;
             this.txtCeremonyTitle.Leave += new System.EventHandler(this.txtCeremonyTitle_Leave);

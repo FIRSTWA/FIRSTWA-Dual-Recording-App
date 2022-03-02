@@ -154,13 +154,22 @@ namespace FIRSTWA_Recorder
             logger.Info("... Reading form variables from registry");
             try
             {
+                //
+                // Run through the registry keys we were expecting. If they aren't
+                // all there, then do a default registry key creation
+                //
                 foreach (RegistryKeyName keyName in registryKeyNames)
                 {
-                    if (ReadRegistryKey(keyName) == "")
+                    if (ReadRegistryKey(keyName) == null)
                     {
                         UpdateRegistryKeys();
                     }
                 }
+
+                //
+                // Should be the case we have verified all of the registry keys
+                // Now grab the ones we need.
+                //
 
                 strYear = ReadRegistryKey(regYear);
                 strIPAddressPC = ReadRegistryKey(regPC);
@@ -188,7 +197,7 @@ namespace FIRSTWA_Recorder
             tbaRequest = new RestRequest($"district/" + strYear + "pnw/events", Method.GET);
             TBAKEY = ReadRegistryKey(regAPIKey);
 
-            if (TBAKEY == "")
+            if (TBAKEY == null)
             {
                 logger.Fatal("- Failed: Could not find TBA API key");
                 TBAKEY = Interaction.InputBox("Please enter the TBA API key.", "TBA API Key", "");
@@ -258,11 +267,18 @@ namespace FIRSTWA_Recorder
             RegistryKey firstwaKey = Registry.CurrentUser.OpenSubKey(BASESUBKEY, true);
             if (firstwaKey == null)
             {
-                return "";
+                return null;
             }
             else
             {
-                return firstwaKey.GetValue(key).ToString();
+                var fwKeyValue = firstwaKey.GetValue(key);
+
+                if(fwKeyValue != null)
+                {
+                    return fwKeyValue.ToString();
+                }
+
+                return null;
             }
 
         }
@@ -312,7 +328,7 @@ namespace FIRSTWA_Recorder
                     matchType = "F";
                     matchAbrev = "f";
                     break;
-                default:
+                default:                // This means ceremony
                     matchType = "";
                     matchAbrev = "";
                     break;
@@ -817,6 +833,9 @@ namespace FIRSTWA_Recorder
                         numFinalNo.Visible = false;
                         lblCeremonyTitle.Visible = true;
                         txtCeremonyTitle.Visible = true;
+                        lblCeremonyTitle.Location = new Point(10, 70);
+                        txtCeremonyTitle.Location = new Point(100, 70);
+                        txtCeremonyTitle.Size = new Size(280, 20);
                         numMatchNumber.Maximum = 1;
                         numFinalNo.Maximum = 1;
                         break;
@@ -858,6 +877,8 @@ namespace FIRSTWA_Recorder
 
         private void GetMatches()
         {
+            if (currentEvent == null || currentEvent.key == null) return;
+
             logger.Info("Getting Match List from TBA");
             tbaRequest = new RestRequest(string.Format("event/{0}/matches/simple", currentEvent.key), Method.GET);
 
@@ -1417,6 +1438,11 @@ namespace FIRSTWA_Recorder
                 state = FormState.Idle;
                 launch_youtube();
             }
+
+        }
+
+        private void lblCeremonyTitle_Click(object sender, EventArgs e)
+        {
 
         }
 

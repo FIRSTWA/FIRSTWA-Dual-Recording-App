@@ -50,10 +50,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestCertificateThumbprint>80B0FE433CF33429DA2FC49AAFC624CE8273EE9E</ManifestCertificateThumbprint>
+    <ManifestCertificateThumbprint>159D6146DB885FB81EA97D9CD81AA2EE8DE52826</ManifestCertificateThumbprint>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestKeyFile>FIRSTWA-Dual-Recording-App_1_TemporaryKey.pfx</ManifestKeyFile>
+    <ManifestKeyFile>FIRSTWA-Dual-Recording-App_2_TemporaryKey.pfx</ManifestKeyFile>
   </PropertyGroup>
   <PropertyGroup>
     <GenerateManifests>true</GenerateManifests>
@@ -173,6 +173,7 @@
       <DependentUpon>YoutubeUpload.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="FIRSTWA-Dual-Recording-App_1_TemporaryKey.pfx" />
+    <None Include="FIRSTWA-Dual-Recording-App_2_TemporaryKey.pfx" />
     <None Include="FIRSTWA-Dual-Recording-App_TemporaryKey.pfx" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
