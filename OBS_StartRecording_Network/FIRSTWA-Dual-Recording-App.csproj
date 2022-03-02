@@ -81,6 +81,9 @@
     <ErrorReport>prompt</ErrorReport>
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>record.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="System" />
@@ -222,6 +225,9 @@
     <PackageReference Include="WebSocketSharp">
       <Version>1.0.3-rc11</Version>
     </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="record.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
