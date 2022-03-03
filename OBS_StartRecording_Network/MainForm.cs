@@ -247,10 +247,20 @@ namespace FIRSTWA_Recorder
         {
             logger.Info("... Creating Base directory" + strBaseDir);
 
-            if (!Directory.Exists(strBaseDir))
+            try
             {
-                Directory.CreateDirectory(strBaseDir);
+                if (!Directory.Exists(strBaseDir))
+                {
+                    Directory.CreateDirectory(strBaseDir);
+                }
+
             }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Creating " + strBaseDir + " failed "+ ex.Message + "\nNeed to change Basedir in Settings->Recording?");
+                return;
+            }
+
 
             tempFolder = strBaseDir + "\\Temp";
             logger.Info("... Creating Temp directory" + tempFolder);
