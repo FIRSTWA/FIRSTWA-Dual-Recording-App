@@ -983,7 +983,57 @@ namespace FIRSTWA_Recorder
                 logger.Error("- Failed");
             }
         }
+        private bool MoveVersionTo(string strSourcePath, string strDestPath)
+        {
+            if (System.IO.File.Exists(strDestPath))
+            {
+                int i;
+                string strNewPath = "";
 
+                for (i = 2; i < 1000; i++)
+                {
+                    string strDestJustThePathPart = System.IO.Path.GetDirectoryName(strDestPath);
+
+                    if (strDestJustThePathPart == null)
+                    {
+                        strDestJustThePathPart = "";
+                    }
+
+                    string strBaseFilename = System.IO.Path.GetFileNameWithoutExtension(strDestPath);
+                    string strExtension = System.IO.Path.GetExtension(strDestPath);
+                    strNewPath = System.IO.Path.Combine(strDestJustThePathPart, strBaseFilename + "-" + i.ToString() + strExtension);
+
+                    if (System.IO.File.Exists(strNewPath))
+                    {
+                        // New path is viable. Use it
+                        continue;
+                    }
+                    break;
+                }
+                if (i >= 1000)
+                {
+                    // Something is wrong. We were unlikely to do 1000 new files! 
+                    logger.Info("Too many iterations of " + strDestPath);
+                    return false;
+
+                }
+                // Change filename
+                strDestPath = strNewPath;
+            }
+            try
+            {
+                System.IO.File.Move(strSourcePath, strDestPath);
+            }
+            catch (Exception ex)
+            {
+                logger.Error("Exception caught moving file");
+                logger.Error(ex.ToString());
+                return false;
+            }
+            return true;
+
+            
+        }
         #region Background Workers
         private void bgWorker_FTP_Wide_DoWork(object sender, DoWorkEventArgs e)
         {
@@ -1110,10 +1160,12 @@ namespace FIRSTWA_Recorder
                        
             try
             {
-                System.IO.File.Move(tempFile, strDestPath);
-
-                // If that succeded, then remove the file from the HyperDeck
-                DeleteFTPFile(wideURI, fileNames[matchIndex]);
+                if(MoveVersionTo(tempFile, strDestPath))
+                {
+                    // If that succeded, then remove the file from the HyperDeck
+                    DeleteFTPFile(wideURI, fileNames[matchIndex]);
+                }
+ 
 
             } catch 
             {
@@ -1263,10 +1315,12 @@ namespace FIRSTWA_Recorder
 
             try
             {
-                System.IO.File.Move(tempFile, strDestPath);
+                if (MoveVersionTo(tempFile, strDestPath))
+                {
+                    // If that succeded, then remove the file from the HyperDeck
+                    DeleteFTPFile(programURI, fileNames[matchIndex]);
+                }
 
-                // If that succeded, then remove the file from the HyperDeck
-                DeleteFTPFile(programURI, fileNames[matchIndex]);
             }
             catch
             {
