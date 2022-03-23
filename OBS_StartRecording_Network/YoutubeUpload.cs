@@ -21,8 +21,8 @@ namespace FIRSTWA_Recorder
             programFileName = program;
             wideFileName = wide;
 
-            txtProgramTitle.Text = program.Replace(".mp4", "");
-            txtWideTitle.Text = wide.Replace(".mp4", "");
+            txtProgramTitle.Text = (program != null)?program.Replace(".mp4", ""):"No Recording";
+            txtWideTitle.Text = (wide != null)?wide.Replace(".mp4", ""):"No recording";
             txtDescription.Text = description.Replace("\n", "\r\n");
             txtTags.Text = tags;
         }
