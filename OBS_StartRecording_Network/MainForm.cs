@@ -1424,15 +1424,15 @@ namespace FIRSTWA_Recorder
                 ytDescription = string.Format("{0} FRC {1} Week #{2}\n" +
                            "Red Alliance: [RED 1] [RED 2] [RED3]\n" +
                            "Blue Alliance: [BLUE 1] [BLUE 2] [BLUE 3]\n\n" +
-                           "Footage of the {0} FRC {1} is coutesy of the FIRST Washington A/V Crew\n\n" +
+                           "Footage of the {0} FRC {1} is courtesy of the FIRST Washington A/V Crew\n\n" +
                            //"To view match schedules and results for this event, visit the FRC Event Results Portal:\n" +
                            //"{9}\n\n" +
-                           "Folow the PNW District social media accounts for updates throughout the season!\n" +
-                           "Facebook: Washington FIRST Robotics / OregonFRC\n" +
-                           "Twitter: @first_wa / @OregonRobotics\n" +
-                           "Youtube: Washington FIRST Robotics\n\n" +
+                           "Follow the PNW District social media accounts for updates throughout the season!\n" +
+                           "Facebook: FIRST Washington / FIRSToregon\n" +
+                           "Twitter: @first_wa / @FIRST_Oregon\n" +
+                           "Youtube: FIRST Washington\n\n" +
                            "For more information and future event schedules, visit our websites:\n" +
-                           "http://www.firstwa.org | http://www.oregonfirst.org \n\n" +
+                           "https://www.firstwa.org | https://ortop.org/ \n\n" +
                            "Thanks for watching!",
                            currentEvent.year,
                            currentEvent.name,
