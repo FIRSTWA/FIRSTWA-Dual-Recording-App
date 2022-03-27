@@ -1432,7 +1432,7 @@ namespace FIRSTWA_Recorder
                            "Twitter: @first_wa / @FIRST_Oregon\n" +
                            "Youtube: FIRST Washington\n\n" +
                            "For more information and future event schedules, visit our websites:\n" +
-                           "https://www.firstwa.org | https://ortop.org/ \n\n" +
+                           "https://www.firstwa.org | https://ortop.org \n\n" +
                            "Thanks for watching!",
                            currentEvent.year,
                            currentEvent.name,
