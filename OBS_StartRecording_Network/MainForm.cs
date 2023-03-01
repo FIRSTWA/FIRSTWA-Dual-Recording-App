@@ -79,7 +79,7 @@ namespace FIRSTWA_Recorder
 
         Match[] matches;
 
-        string strYear = "2022";
+        string strYear = "2023";
         IPAddress strIPAddressPC = @"192.168.100.70";
         IPAddress strIPAddressPROGRAM = @"192.168.100.35";
         IPAddress strIPAddressWIDE = @"192.168.100.34";
@@ -107,7 +107,11 @@ namespace FIRSTWA_Recorder
 
         string matchNameProgram = "";
         string matchNameWide = "";
-        string matchABV = "";
+        // string matchABV = "";
+        string matchABVWide = "";
+        string matchABVProgram = "";
+
+        long tickStamp = 0;  // Used as a serial number for recording files
 
         FileName fileNameProgram, fileNameWide;
         private FilePath tempFolder;
@@ -119,6 +123,8 @@ namespace FIRSTWA_Recorder
 
         private bool wideFTPUploadFail = false;
         private bool programFTPUploadFail = false;
+
+        private bool bYoutubePopup = false;
 
         private bool PCPingable = false;
         private Ping pinger = null;
@@ -134,6 +140,52 @@ namespace FIRSTWA_Recorder
             Ceremony
         }
         MatchType currentMatchType = MatchType.Qualification;
+
+        public bool UpdateTBA()
+        {
+            logger.Info("... Reading TBA API key from registry");
+            string strReq = "/district/" + strYear + "pnw/events";
+            tbaRequest = new RestRequest(strReq, Method.GET);
+            TBAKEY = ReadRegistryKey(regAPIKey);
+
+            if (TBAKEY == null)
+            {
+                logger.Fatal("- Failed: Could not find TBA API key");
+                TBAKEY = Interaction.InputBox("Please enter the TBA API key.", "TBA API Key", "");
+
+                if (TBAKEY == "")
+                {
+                    MessageBox.Show("Could not find a TBA API key in the registry.  Closing...");
+                    return false;
+                }
+
+                WriteRegistryKey(regAPIKey, TBAKEY);
+            }
+
+            logger.Info("... Getting event list from TBA");
+            tbaRequest.AddHeader
+            (
+                "X-TBA-Auth-Key",
+                TBAKEY
+            );
+            IRestResponse tbaResponse = tbaClient.Execute(tbaRequest);
+            string tbaContent = tbaResponse.Content;
+            tbaContent = tbaContent.Trim('"');
+
+            eventDistrict = JsonConvert.DeserializeObject<List<District>>(tbaContent);
+            eventDetails = JsonConvert.DeserializeObject<List<Event>>(tbaContent);
+
+            // clear out anything that is already there
+
+            comboEventName.Items.Clear();
+
+            eventDetails.ForEach(x => comboEventName.Items.Add((x.week + 1) + " - " + x.first_event_code + " - " + x.short_name));
+            comboEventName.Sorted = true;
+            comboEventName.Items.Add("Custom Event");
+
+            return true; 
+
+        }
 
         public MainForm()
         {
@@ -193,40 +245,9 @@ namespace FIRSTWA_Recorder
             // Insure that the base directory structure exists
             CreateBaseDirectoryStructure();
 
-            logger.Info("... Reading TBA API key from registry");
-            tbaRequest = new RestRequest($"district/" + strYear + "pnw/events", Method.GET);
-            TBAKEY = ReadRegistryKey(regAPIKey);
+            // Grab TBA info
 
-            if (TBAKEY == null)
-            {
-                logger.Fatal("- Failed: Could not find TBA API key");
-                TBAKEY = Interaction.InputBox("Please enter the TBA API key.", "TBA API Key", "");
-
-                if (TBAKEY == "")
-                {
-                    MessageBox.Show("Could not find a TBA API key in the registry.  Closing...");
-                    Application.Exit();
-                }
-
-                WriteRegistryKey(regAPIKey, TBAKEY);
-            }
-
-            logger.Info("... Getting event list from TBA");
-            tbaRequest.AddHeader
-            (
-                "X-TBA-Auth-Key",
-                TBAKEY
-            );
-            IRestResponse tbaResponse = tbaClient.Execute(tbaRequest);
-            string tbaContent = tbaResponse.Content;
-            tbaContent = tbaContent.Trim('"');
-
-            eventDistrict = JsonConvert.DeserializeObject<List<District>>(tbaContent);
-            eventDetails = JsonConvert.DeserializeObject<List<Event>>(tbaContent);
-
-            eventDetails.ForEach(x => comboEventName.Items.Add((x.week + 1) + " - " + x.first_event_code + " - " + x.short_name));
-            comboEventName.Sorted = true;
-            comboEventName.Items.Add("Custom Event");
+            UpdateTBA();        
 
            
             logger.Info("... Initializing Settings Forms");
@@ -343,18 +364,19 @@ namespace FIRSTWA_Recorder
                     matchAbrev = "";
                     break;
             }
+            string matchABV; 
 
             if (currentMatchType == MatchType.Qualification || currentMatchType == MatchType.Final)
             {
-                matchABV = string.Format("{0}_{1}{2}", currentEvent.event_code, matchAbrev, numMatchNumber.Value.ToString());
+                matchABV = string.Format("{0}_{1}{2}v{3}", currentEvent.event_code, matchAbrev, numMatchNumber.Value.ToString(), tickStamp.ToString());
             }
             else if (currentMatchType != MatchType.Ceremony)
             {
-                matchABV = string.Format("{0}_{1}{2}m{3}", currentEvent.event_code, matchAbrev, numFinalNo.Value.ToString(), numMatchNumber.Value.ToString());
+                matchABV = string.Format("{0}_{1}{2}m{3}v{4}", currentEvent.event_code, matchAbrev, numFinalNo.Value.ToString(), numMatchNumber.Value.ToString(), tickStamp.ToString());
             }
             else
             {
-                matchABV = string.Format("{0}c{1}", currentEvent.event_code, txtCeremonyTitle.Text.ToString());
+                matchABV = string.Format("{0}c{1}v{2}", currentEvent.event_code, txtCeremonyTitle.Text.ToString(),tickStamp.ToString());
             }
 
             currentMatch = null;
@@ -369,7 +391,8 @@ namespace FIRSTWA_Recorder
                     }
                 }
             }
-
+            matchABVWide = matchABV + "_w";
+            matchABVProgram = matchABV + "_p";
             if (currentMatch == null)
             {
                 return false;
@@ -390,13 +413,19 @@ namespace FIRSTWA_Recorder
                 return;
             }
 
+            tickStamp = tickStamp + 1;  // Assign unique value to this recording click. Likely a unique number
+
             programFTPUploadFail = false;
             wideFTPUploadFail = false;
+
+            // Check to see if current match number is valid. Otherwise, try an update
             
             if (!SearchValidMatch())
             {
+                // Update to current match list from TBA
                 GetMatches();
 
+                // Try finding it again
                 SearchValidMatch();
                 if (!SearchValidMatch())
                 {
@@ -410,7 +439,7 @@ namespace FIRSTWA_Recorder
                 }
             }
 
-            logger.Info("... Match abreviation: {0}", matchABV);
+            logger.Info("... Match abreviation: {0}", matchABVProgram);
 
             groupEvent.Enabled = false;
             groupMatch.Enabled = false;
@@ -436,9 +465,9 @@ namespace FIRSTWA_Recorder
                     matchNameProgram = string.Format("{0} {1} Ceremony {2}", currentEvent.year, currentEvent.name, txtCeremonyTitle.Text.ToString());
                 }
 
-                fileNameProgram = matchNameProgram + ".mp4";
+                fileNameProgram = matchNameProgram + tickStamp.ToString() + ".mp4";
 
-                hdProgram.Write("record: name: " + matchABV +"_program");
+                hdProgram.Write("record: name: " + matchABVProgram);
                 
                 logger.Info("... Program file name: {0}", fileNameProgram);
 
@@ -462,9 +491,9 @@ namespace FIRSTWA_Recorder
                 {
                     matchNameWide = string.Format("{2}{3}-{4} {0} {1} - WIDE", currentEvent.year, currentEvent.name, matchType, numFinalNo.Value.ToString(), numMatchNumber.Value.ToString());
                 }
-                fileNameWide = matchNameWide + ".mp4";
+                fileNameWide = matchNameWide + tickStamp.ToString() + ".mp4";
 
-                hdWide.Write("record: name: " + matchABV + "_wide");
+                hdWide.Write("record: name: " + matchABVWide);
 
                 
                 logger.Info("... Wide file name: {0}", fileNameWide);
@@ -580,7 +609,7 @@ namespace FIRSTWA_Recorder
                 }
             }
 
-            GetMatches();
+            // GetMatches();
 
             btnCancel.Enabled = true;
             groupEvent.Enabled = true;
@@ -590,7 +619,7 @@ namespace FIRSTWA_Recorder
         }
 
         #region FTP Stuff
-        private void CreateEventDirectory(URI uriPath)
+        /* private void CreateEventDirectory(URI uriPath)
         {
             logger.Info("Connecting to PC and creating remote directory");
             try
@@ -621,10 +650,11 @@ namespace FIRSTWA_Recorder
             }
 
         }
+        */
 
         //convert the mp4 from uncompressed audio to mp3 audio using ffmpeg
         //videoPath - filepath of mp4 to convert
-        private void ConvertVideo(FilePath videoPath, MapMono style)
+       /* private void ConvertVideo(FilePath videoPath, MapMono style)
         {
             logger.Info("Starting Conversion for {0}", videoPath);
             string videoName = videoPath.Substring(0,videoPath.Length - 4);
@@ -678,7 +708,7 @@ namespace FIRSTWA_Recorder
 
             File.Move(outVideo, videoPath);
         }
-
+       */
         //download an mp4 from a remote server
         //uri - connection to download from
         //ftpFileName - file path at target remote server
@@ -689,9 +719,10 @@ namespace FIRSTWA_Recorder
             progress++;
             SetProgress(progress);
             string ftpfullpath = remotePath.Replace(".mcc", ".mp4");
-
+            
             using (WebClient request = new WebClient())
             {
+                
                 request.DownloadFile(ftpfullpath, localFilePath);
 
                 //using (FileStream file = File.Create(inputfilepath))
@@ -709,7 +740,7 @@ namespace FIRSTWA_Recorder
         //upload an mp4 to a remote server
         //uri - connection and file path at remote to upload to
         //filePath - file path at local to upload from
-        public void UploadFileFTP(URI uri, FilePath filePath)
+        /* public void UploadFileFTP(URI uri, FilePath filePath)
         {
             logger.Info("Copying {0} to remote", filePath);
             progress++;
@@ -737,7 +768,7 @@ namespace FIRSTWA_Recorder
             SetProgress(progress);
             logger.Info("Done Copying {0} to remote", filePath);
         }
-
+*/
         //delete a file at a remote server
         //uri - remote server to delete at
         //filename - 
@@ -786,11 +817,13 @@ namespace FIRSTWA_Recorder
                 strIPAddressWIDE = frmRecordingSetting.IPAddressWIDE;
                 strIPAddressPC = frmRecordingSetting.IPAddressPC;
                 strBaseDir = frmRecordingSetting.BaseDir;
+                strYear = frmRecordingSetting.Year;
 
                 // It is possible that the base directory structure changed. Go make a new one if needed.
                 CreateBaseDirectoryStructure();
 
                 UpdateRegistryKeys();
+                UpdateTBA();   // Year could have changed. 
             }
         }
 
@@ -900,6 +933,9 @@ namespace FIRSTWA_Recorder
 
             IRestResponse tbaResponse = tbaClient.Execute(tbaRequest);
             string tbaContent = tbaResponse.Content;
+
+            // Update the matches variable
+
             matches = JsonConvert.DeserializeObject<Match[]>(tbaContent);
             logger.Info("Done Getting Match List from TBA");
         }
@@ -1040,10 +1076,15 @@ namespace FIRSTWA_Recorder
             logger.Info("Starting Wide worker");
             logger.Info("... Wide worker waiting");
             lblReportA.Invoke((Action)(() => { lblReportA.Text = "Waiting"; }));
-            Thread.Sleep(1000);
 
-            logger.Info("... Wide cleaning HyperDeck SD");
-            lblReportA.Invoke((Action)(() => { lblReportA.Text = "Clearing SD"; }));
+            // Found through experimentation that a delay is required here. 
+            // I think that the Hyperdeck requires time to finalize the file. 
+            // Previous 1 second now requires 1.5 sec or more
+
+
+            Thread.Sleep(2500);
+
+
 
             progress++;
             SetProgress(progress);
@@ -1077,76 +1118,21 @@ namespace FIRSTWA_Recorder
 
             URI wideURI = string.Format("ftp://{0}/1", strIPAddressWIDE);
             FilePath widePath = string.Format("ftp://{0}/{1}/{2}/WIDE", strIPAddressPC,strYear, currentEvent.short_name);
-
-            // Changed the code to make directory structure without FTP program
-            // CreateEventDirectory(widePath);   
-
-
-            List<string> directories = GetFTPFiles(wideURI);
-            List<DateTime> timestamps = new List<DateTime>();
-            List<string> fileNames = new List<string>();
-
-            Regex regex = new Regex(@"^([d-])([rwxt-]{3}){3}\s+\d{1,}\s+.*?(\d{1,})\s+(\w+\s+\d{1,2}\s+(?:\d{4})?)(\d{1,2}:\d{2})?\s+(.+?)\s?$",
-            RegexOptions.Compiled | RegexOptions.Multiline | RegexOptions.IgnoreCase | RegexOptions.IgnorePatternWhitespace);
-
-            foreach (string file in directories)
-            {
-                System.Text.RegularExpressions.Match match = regex.Match(file);
-                timestamps.Add(DateTime.Parse(match.Groups[5].ToString()));
-                fileNames.Add(match.Groups[6].ToString());
-            }
-
-            /*
-             * This code was walking the directory on the recorder deleting what was supposed to be old files. 
-             * There is an error in the logic because it doesn't handle the times correctly, causing this section
-             * of code to delete the newest recording if there are recordings from later times. So rolling over at noon, or with recordings from the previous day
-             * 
-            if (directories.Count > 2)
-            {
-                while (directories.Count > 2)
-                {
-                    int minTimstampIndex = timestamps.IndexOf(timestamps.Min());
-
-                    DeleteFTPFile(wideURI, fileNames[minTimstampIndex]);
-                    fileNames.RemoveAt(minTimstampIndex);
-                    timestamps.RemoveAt(minTimstampIndex);
-                    directories.RemoveAt(minTimstampIndex);
-                }
-            }
-            */
-            
+           
             progress++;
             SetProgress(progress);
 
             lblReportA.Invoke((Action)(()=> { lblReportA.Text = "Finding Video"; }));
             logger.Info("... Finding Wide source file");
 
-            string tempFile = tempFolder +"\\"+ fileNameWide;
-
-            int matchIndex = -1;
-            int most_recent = -1;
-            foreach (string file in fileNames)
-            {
-                if (file.Substring(0, file.Length - 10).Equals(matchABV + "_wide"))
-                {
-                    int revision = Int32.Parse(file.Substring(file.Length - 9, 4));
-                    if (revision > most_recent)
-                    {
-                        matchIndex = fileNames.IndexOf(file);
-                        most_recent = revision;
-                    }
-                }
-            }
-            if(matchIndex < 0)
-            {
-                lblReportA.Invoke((Action)(()=> { lblReportA.Text = "Failed to Find"; }));
-                logger.Info("- Failed: Wide source file not found");
-                return;
-            }
+ 
             string strDestPath = System.IO.Path.Combine(strWideDir, fileNameWide);
+            string tempFile = tempFolder + "\\" + fileNameWide;
+            string wideFullPath = wideURI + "/" + matchABVWide + ".mp4";
+
             lblReportA.Invoke((Action)(()=> { lblReportA.Text = "Downloading Video"; }));
             logger.Info("... Wide worker downloading source");
-            DownloadFileFTP(wideURI + "/" + fileNames[matchIndex], tempFile);
+            DownloadFileFTP(wideFullPath, tempFile);
 
             //lblReportA.Invoke((Action)(()=> { lblReportA.Text = "Converting Video"; }));
             //logger.Info("... Wide worker processing");
@@ -1163,7 +1149,7 @@ namespace FIRSTWA_Recorder
                 if(MoveVersionTo(tempFile, strDestPath))
                 {
                     // If that succeded, then remove the file from the HyperDeck
-                    DeleteFTPFile(wideURI, fileNames[matchIndex]);
+                    DeleteFTPFile(wideURI, matchABVWide + ".mp4");
                 }
  
 
@@ -1188,7 +1174,13 @@ namespace FIRSTWA_Recorder
             logger.Info("Starting Program worker");
             logger.Info("... Program worker waiting");
             lblReportB.Invoke((Action)(()=> { lblReportB.Text = "Waiting"; }));
-            Thread.Sleep(1000);
+
+            // Found through experimentation that a delay is required here. 
+            // I think that the Hyperdeck requires time to finalize the file. 
+            // Previous 1 second now requires 1.5 sec or more
+
+            
+            Thread.Sleep(2500);
 
             logger.Info("... Program cleaning HyperDeck SD");
             lblReportB.Invoke((Action)(()=> { lblReportB.Text = "Clearing SD"; }));
@@ -1224,43 +1216,7 @@ namespace FIRSTWA_Recorder
                 Directory.CreateDirectory(strProgDir);
             }
 
-            //    Old code CreateEventDirectory(programPath);
-
-
-            List<string> directories = GetFTPFiles(programURI);
-            List<DateTime> timestamps = new List<DateTime>();
-            List<string> fileNames = new List<string>();
-
-            Regex regex = new Regex(@"^([d-])([rwxt-]{3}){3}\s+\d{1,}\s+.*?(\d{1,})\s+(\w+\s+\d{1,2}\s+(?:\d{4})?)(\d{1,2}:\d{2})?\s+(.+?)\s?$",
-            RegexOptions.Compiled | RegexOptions.Multiline | RegexOptions.IgnoreCase | RegexOptions.IgnorePatternWhitespace);
-
-            foreach (string file in directories)
-            {
-                System.Text.RegularExpressions.Match match = regex.Match(file);
-                timestamps.Add(DateTime.Parse(match.Groups[5].ToString()));
-                fileNames.Add(match.Groups[6].ToString());
-            }
-
-            /*
-             * This code was walking the directory on the recorder deleting what was supposed to be old files. 
-             * There is an error in the logic because it doesn't handle the times correctly, causing this section
-             * of code to delete the newest recording if there are recordings from later times. So rolling over at noon, or with recordings from the previous day
-             * 
-
-            if (directories.Count > 2)
-            {
-                while (directories.Count > 2)
-                {
-                    int minTimstampIndex = timestamps.IndexOf(timestamps.Min());
-                    DeleteFTPFile(programURI, fileNames[minTimstampIndex]);
-
-                    fileNames.RemoveAt(minTimstampIndex);
-                    timestamps.RemoveAt(minTimstampIndex);
-                    directories.RemoveAt(minTimstampIndex);
-                }
-            }
-            */
-
+          
             progress++;
             SetProgress(progress);
 
@@ -1268,57 +1224,24 @@ namespace FIRSTWA_Recorder
             logger.Info("... Finding Program source file");
 
 
-            string tempFile = tempFolder +"\\"+ fileNameProgram;
-
-            int matchIndex = 0;
-            int most_recent = -1;
-            foreach (string file in fileNames)
-            {
-                if(file.Substring(0, file.Length - 10).Equals(matchABV + "_program"))
-                {
-                    int revision = Int32.Parse(file.Substring(file.Length - 9, 4));
-                    if (revision > most_recent)
-                    {
-                        matchIndex = fileNames.IndexOf(file);
-                        most_recent = revision;
-                    }
-                }
-            }
-
-            if (matchIndex < 0)
-            {
-                lblReportB.Invoke((Action)(()=> { lblReportB.Text = "Failed to Find"; }));
-                logger.Info("- Failed: Program source file not found");
-                return;
-            }
-
             string strDestPath = System.IO.Path.Combine(strProgDir, fileNameProgram);
+            string tempFile = tempFolder +"\\"+ fileNameProgram;
+            string programFullPath = programURI + "/" + matchABVProgram + ".mp4";
+            logger.Info("... Program worker downloading source " + programFullPath + " to " + tempFile);
+            lblReportB.Invoke((Action)(() => { lblReportB.Text = "Downloading Video"; }));
 
-            string programFullPath = programURI + "/" + fileNames[matchIndex];
-            logger.Info("... Program worker downloading source "+programFullPath +" to "+tempFile);
-            lblReportB.Invoke((Action)(()=> { lblReportB.Text = "Downloading Video"; }));
+
+
             DownloadFileFTP(programFullPath, tempFile);
-          
 
-
-            //logger.Info("... Program worker processing");
-            //lblReportB.Invoke((Action)(()=> { lblReportB.Text = "Converting Video"; }));
-            //onvertVideo(tempFile, progChannels);
-
-            //; logger.Info("... Program worker uploading");
-            // lblReportB.Invoke((Action)(()=> { lblReportB.Text = "Uploading Video"; }));
-            // UploadFileFTP(programPath + "/" + fileNameProgram, tempFile);
-
-            // Now move the file from the temp directory to the final resting place
-
-            
+           
 
             try
             {
                 if (MoveVersionTo(tempFile, strDestPath))
                 {
                     // If that succeded, then remove the file from the HyperDeck
-                    DeleteFTPFile(programURI, fileNames[matchIndex]);
+                    DeleteFTPFile(programURI, matchABVProgram + ".mp4");
                 }
 
             }
@@ -1333,10 +1256,7 @@ namespace FIRSTWA_Recorder
             logger.Info("- Done: Program");
             lblReportB.Invoke((Action)(()=> { lblReportB.Text = "Done"; }));
 
-            if ((wideFTPUploadFail || programFTPUploadFail) && !bgWorker_FTP_Program.IsBusy)
-            {
-                MessageBox.Show("WARNING: The last match did not copy to the FTP folder!");
-            }
+           
 
             ledProgram.BackColor = Color.Green;
         }
@@ -1477,7 +1397,7 @@ namespace FIRSTWA_Recorder
             {
                 SetProgress(progressBar1.Maximum);
                 state = FormState.Idle;
-                launch_youtube();
+                if (bYoutubePopup) launch_youtube();
             }
         }
 
@@ -1500,7 +1420,7 @@ namespace FIRSTWA_Recorder
             {
                 SetProgress(progressBar1.Maximum);
                 state = FormState.Idle;
-                launch_youtube();
+                if (bYoutubePopup)  launch_youtube();
             }
 
         }
@@ -1508,6 +1428,11 @@ namespace FIRSTWA_Recorder
         private void lblCeremonyTitle_Click(object sender, EventArgs e)
         {
 
+        }
+
+        private void checkYTPopup_CheckedChanged(object sender, EventArgs e)
+        {
+            bYoutubePopup = checkYTPopup.Checked;
         }
 
         private void btnCancel_Click(object sender, EventArgs e)

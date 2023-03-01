@@ -50,10 +50,11 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestCertificateThumbprint>66F13D498DA27B7A691099D5CEB4FE2DF6E61BAC</ManifestCertificateThumbprint>
+    <ManifestCertificateThumbprint>B30DFC4C52215D650DDDA30F9342A5F9EECA974C</ManifestCertificateThumbprint>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestKeyFile>FIRSTWA-Dual-Recording-App_4_TemporaryKey.pfx</ManifestKeyFile>
+    <ManifestKeyFile>
+    </ManifestKeyFile>
   </PropertyGroup>
   <PropertyGroup>
     <GenerateManifests>true</GenerateManifests>
@@ -179,6 +180,7 @@
     <None Include="FIRSTWA-Dual-Recording-App_2_TemporaryKey.pfx" />
     <None Include="FIRSTWA-Dual-Recording-App_3_TemporaryKey.pfx" />
     <None Include="FIRSTWA-Dual-Recording-App_4_TemporaryKey.pfx" />
+    <None Include="FIRSTWA-Dual-Recording-App_5_TemporaryKey.pfx" />
     <None Include="FIRSTWA-Dual-Recording-App_TemporaryKey.pfx" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

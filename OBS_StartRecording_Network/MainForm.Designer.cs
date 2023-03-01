@@ -76,6 +76,7 @@
             this.bgWorker_WD = new System.ComponentModel.BackgroundWorker();
             this.btnShowYT = new System.Windows.Forms.Button();
             this.btnTempAccess = new System.Windows.Forms.Button();
+            this.checkYTPopup = new System.Windows.Forms.CheckBox();
             this.groupMatchTypes.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numMatchNumber)).BeginInit();
             this.menuStrip1.SuspendLayout();
@@ -567,6 +568,17 @@
             this.btnTempAccess.UseVisualStyleBackColor = true;
             this.btnTempAccess.Click += new System.EventHandler(this.btnTempAccess_Click);
             // 
+            // checkYTPopup
+            // 
+            this.checkYTPopup.AutoSize = true;
+            this.checkYTPopup.Location = new System.Drawing.Point(312, 414);
+            this.checkYTPopup.Name = "checkYTPopup";
+            this.checkYTPopup.Size = new System.Drawing.Size(100, 17);
+            this.checkYTPopup.TabIndex = 13;
+            this.checkYTPopup.Text = "Youtube Popup";
+            this.checkYTPopup.UseVisualStyleBackColor = true;
+            this.checkYTPopup.CheckedChanged += new System.EventHandler(this.checkYTPopup_CheckedChanged);
+            // 
             // MainForm
             // 
             this.AcceptButton = this.btnStartRecording;
@@ -574,6 +586,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnStopRecording;
             this.ClientSize = new System.Drawing.Size(416, 486);
+            this.Controls.Add(this.checkYTPopup);
             this.Controls.Add(this.btnTempAccess);
             this.Controls.Add(this.btnShowYT);
             this.Controls.Add(this.lblReportB);
@@ -662,6 +675,7 @@
         private System.Windows.Forms.Button btnConnectPC;
         private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
         private System.Windows.Forms.Button btnTempAccess;
+        private System.Windows.Forms.CheckBox checkYTPopup;
     }
 }
 
