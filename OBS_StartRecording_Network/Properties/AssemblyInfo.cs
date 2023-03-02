@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("FIRSTWADualRecorder")]
-[assembly: AssemblyCopyright("Copyright ©  2022 FIRSTWA")]
+[assembly: AssemblyCopyright("Copyright ©  2023 FIRSTWA")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -32,5 +32,5 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("20.22.0302.8")]
-[assembly: AssemblyFileVersion("20.22.0302.8")]
+[assembly: AssemblyVersion("20.23.0302.9")]
+[assembly: AssemblyFileVersion("20.23.0302.9")]

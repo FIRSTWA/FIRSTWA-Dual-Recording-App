@@ -168,9 +168,23 @@ namespace FIRSTWA_Recorder
                 "X-TBA-Auth-Key",
                 TBAKEY
             );
-            IRestResponse tbaResponse = tbaClient.Execute(tbaRequest);
-            string tbaContent = tbaResponse.Content;
-            tbaContent = tbaContent.Trim('"');
+
+            string tbaContent;
+
+            if(checkHackData.Checked)
+            {
+                tbaContent = tbaHackEventData;
+            }
+            else
+            {
+                IRestResponse tbaResponse = tbaClient.Execute(tbaRequest);
+                tbaContent = tbaResponse.Content;
+                tbaContent = tbaContent.Trim('"');
+            }
+
+
+            
+
 
             eventDistrict = JsonConvert.DeserializeObject<List<District>>(tbaContent);
             eventDetails = JsonConvert.DeserializeObject<List<Event>>(tbaContent);
@@ -1456,6 +1470,11 @@ namespace FIRSTWA_Recorder
         }
         #endregion
 
+        private void checkHackData_CheckedChanged(object sender, EventArgs e)
+        {
+            UpdateTBA();
+        }
+
         private void btnOpenRecordings_Click(object sender, EventArgs e)
         {
         }
@@ -1479,7 +1498,437 @@ namespace FIRSTWA_Recorder
             {
                 this.progressBar1.Value = progress;
             }
+
         }
         #endregion
+        public
+ string tbaHackEventData = @"[
+  {
+    ""address"": ""1306 12th St, Oregon City, OR 97045, USA"",
+    ""city"": ""Oregon City"",
+    ""country"": ""USA"",
+    ""district"": {
+      ""abbreviation"": ""pnw"",
+      ""display_name"": ""Pacific Northwest"",
+      ""key"": ""2023pnw"",
+      ""year"": 2023
+    },
+    ""division_keys"": [],
+    ""end_date"": ""2023-03-05"",
+    ""event_code"": ""orore"",
+    ""event_type"": 1,
+    ""event_type_string"": ""District"",
+    ""first_event_code"": ""ORORE"",
+    ""first_event_id"": null,
+    ""gmaps_place_id"": ""ChIJ26wxsM12lVQRBh7dmMPM4Lc"",
+    ""gmaps_url"": ""https://maps.google.com/?q=1306+12th+St,+Oregon+City,+OR+97045,+USA&ftid=0x549576cdb031acdb:0xb7e0ccc398dd1e06"",
+    ""key"": ""2023orore"",
+    ""lat"": 45.3562418,
+    ""lng"": -122.5965714,
+    ""location_name"": ""1306 12th St"",
+    ""name"": ""PNW District Clackamas Academy Event"",
+    ""parent_event_key"": null,
+    ""playoff_type"": 0,
+    ""playoff_type_string"": null,
+    ""postal_code"": ""97045"",
+    ""short_name"": ""Clackamas Academy"",
+    ""start_date"": ""2023-03-03"",
+    ""state_prov"": ""OR"",
+    ""timezone"": ""America/Los_Angeles"",
+    ""webcasts"": [
+      {
+        ""channel"": ""firstinspires28"",
+        ""type"": ""twitch""
+      },
+      {
+        ""channel"": ""firstwa_red2"",
+        ""type"": ""twitch""
+      }
+    ],
+    ""website"": ""http://www.firstwa.org/"",
+    ""week"": 0,
+    ""year"": 2023
+  },
+  {
+    ""address"": ""LB Day Amphitheatre, 2330 17th St NE, Salem, OR 97303, USA"",
+    ""city"": ""Salem"",
+    ""country"": ""USA"",
+    ""district"": {
+      ""abbreviation"": ""pnw"",
+      ""display_name"": ""Pacific Northwest"",
+      ""key"": ""2023pnw"",
+      ""year"": 2023
+    },
+    ""division_keys"": [],
+    ""end_date"": ""2023-03-26"",
+    ""event_code"": ""orsal"",
+    ""event_type"": 1,
+    ""event_type_string"": ""District"",
+    ""first_event_code"": ""ORSAL"",
+    ""first_event_id"": null,
+    ""gmaps_place_id"": ""ChIJ4dDQPPj-v1QRb7lpvvIqsBo"",
+    ""gmaps_url"": ""https://maps.google.com/?q=LB+Day+Amphitheatre&ftid=0x54bffef83cd0d0e1:0x1ab02af2be69b96f"",
+    ""key"": ""2023orsal"",
+    ""lat"": 44.9579466,
+    ""lng"": -123.0091822,
+    ""location_name"": ""LB Day Amphitheatre"",
+    ""name"": ""PNW District Oregon State Fairgrounds Event"",
+    ""parent_event_key"": null,
+    ""playoff_type"": 0,
+    ""playoff_type_string"": null,
+    ""postal_code"": ""97303"",
+    ""short_name"": ""Oregon State Fairgrounds"",
+    ""start_date"": ""2023-03-24"",
+    ""state_prov"": ""OR"",
+    ""timezone"": ""America/Los_Angeles"",
+    ""webcasts"": [
+      {
+        ""channel"": ""firstinspires28"",
+        ""type"": ""twitch""
+      },
+      {
+        ""channel"": ""firstwa_red2"",
+        ""type"": ""twitch""
+      }
+    ],
+    ""website"": ""https://ortop.org/"",
+    ""week"": 3,
+    ""year"": 2023
+  },
+  {
+    ""address"": ""6800 SW Wilsonville Rd, Wilsonville, OR 97070, USA"",
+    ""city"": ""Wilsonville"",
+    ""country"": ""USA"",
+    ""district"": {
+      ""abbreviation"": ""pnw"",
+      ""display_name"": ""Pacific Northwest"",
+      ""key"": ""2023pnw"",
+      ""year"": 2023
+    },
+    ""division_keys"": [],
+    ""end_date"": ""2023-03-12"",
+    ""event_code"": ""orwil"",
+    ""event_type"": 1,
+    ""event_type_string"": ""District"",
+    ""first_event_code"": ""ORWIL"",
+    ""first_event_id"": null,
+    ""gmaps_place_id"": ""ChIJ1y5YwVlulVQR-Ea1Do7NwNs"",
+    ""gmaps_url"": ""https://maps.google.com/?q=6800+SW+Wilsonville+Rd,+Wilsonville,+OR+97070,+USA&ftid=0x54956e59c1582ed7:0xdbc0cd8e0eb546f8"",
+    ""key"": ""2023orwil"",
+    ""lat"": 45.3069373,
+    ""lng"": -122.7475375,
+    ""location_name"": ""6800 SW Wilsonville Rd"",
+    ""name"": ""PNW District Wilsonville Event"",
+    ""parent_event_key"": null,
+    ""playoff_type"": 0,
+    ""playoff_type_string"": null,
+    ""postal_code"": ""97070"",
+    ""short_name"": ""Wilsonville"",
+    ""start_date"": ""2023-03-10"",
+    ""state_prov"": ""OR"",
+    ""timezone"": ""America/Los_Angeles"",
+    ""webcasts"": [
+      {
+        ""channel"": ""firstinspires28"",
+        ""type"": ""twitch""
+      },
+      {
+        ""channel"": ""firstwa_red2"",
+        ""type"": ""twitch""
+      }
+    ],
+    ""website"": ""https://ortop.org/"",
+    ""week"": 1,
+    ""year"": 2023
+  },
+  {
+    ""address"": ""526 5th St, Cheney, WA 99004, USA"",
+    ""city"": ""Cheney"",
+    ""country"": ""USA"",
+    ""district"": {
+      ""abbreviation"": ""pnw"",
+      ""display_name"": ""Pacific Northwest"",
+      ""key"": ""2023pnw"",
+      ""year"": 2023
+    },
+    ""division_keys"": [],
+    ""end_date"": ""2023-04-09"",
+    ""event_code"": ""pncmp"",
+    ""event_type"": 2,
+    ""event_type_string"": ""District Championship"",
+    ""first_event_code"": ""PNCMP"",
+    ""first_event_id"": null,
+    ""gmaps_place_id"": ""ChIJ4z_DL6A4nlQRr2cmvozrjLU"",
+    ""gmaps_url"": ""https://maps.google.com/?cid=13082090007322585007"",
+    ""key"": ""2023pncmp"",
+    ""lat"": 47.49102829999999,
+    ""lng"": -117.5862361,
+    ""location_name"": ""Eastern Washington University"",
+    ""name"": ""Pacific Northwest FIRST District Championship"",
+    ""parent_event_key"": null,
+    ""playoff_type"": 0,
+    ""playoff_type_string"": null,
+    ""postal_code"": ""99004"",
+    ""short_name"": ""Pacific Northwest FIRST"",
+    ""start_date"": ""2023-04-06"",
+    ""state_prov"": ""WA"",
+    ""timezone"": ""America/Los_Angeles"",
+    ""webcasts"": [
+      {
+        ""channel"": ""firstinspires28"",
+        ""type"": ""twitch""
+      },
+      {
+        ""channel"": ""firstinspires29"",
+        ""type"": ""twitch""
+      },
+      {
+        ""channel"": ""firstwa_red2"",
+        ""type"": ""twitch""
+      }
+    ],
+    ""website"": ""http://www.firstwa.org"",
+    ""week"": 5,
+    ""year"": 2023
+  },
+  {
+    ""address"": ""711 E Main St, Auburn, WA 98002, USA"",
+    ""city"": ""Auburn"",
+    ""country"": ""USA"",
+    ""district"": {
+      ""abbreviation"": ""pnw"",
+      ""display_name"": ""Pacific Northwest"",
+      ""key"": ""2023pnw"",
+      ""year"": 2023
+    },
+    ""division_keys"": [],
+    ""end_date"": ""2023-03-27"",
+    ""event_code"": ""waahs"",
+    ""event_type"": 1,
+    ""event_type_string"": ""District"",
+    ""first_event_code"": ""WAAHS"",
+    ""first_event_id"": null,
+    ""gmaps_place_id"": ""ChIJo0EYp3xYkFQRhcgd9HQrEko"",
+    ""gmaps_url"": ""https://maps.google.com/?cid=5337376289699252357"",
+    ""key"": ""2023waahs"",
+    ""lat"": 47.3086637,
+    ""lng"": -122.2199762,
+    ""location_name"": ""Auburn High School"",
+    ""name"": ""PNW District Auburn Event"",
+    ""parent_event_key"": null,
+    ""playoff_type"": 0,
+    ""playoff_type_string"": null,
+    ""postal_code"": ""98002"",
+    ""short_name"": ""Auburn"",
+    ""start_date"": ""2023-03-25"",
+    ""state_prov"": ""WA"",
+    ""timezone"": ""America/Los_Angeles"",
+    ""webcasts"": [
+      {
+        ""channel"": ""firstinspires29"",
+        ""type"": ""twitch""
+      },
+      {
+        ""channel"": ""firstwa_blue2"",
+        ""type"": ""twitch""
+      }
+    ],
+    ""website"": ""http://www.firstwa.org"",
+    ""week"": 3,
+    ""year"": 2023
+  },
+  {
+    ""address"": ""10920 199th Ave Ct E, Bonney Lake, WA 98391, USA"",
+    ""city"": ""Bonney Lake"",
+    ""country"": ""USA"",
+    ""district"": {
+      ""abbreviation"": ""pnw"",
+      ""display_name"": ""Pacific Northwest"",
+      ""key"": ""2023pnw"",
+      ""year"": 2023
+    },
+    ""division_keys"": [],
+    ""end_date"": ""2023-04-03"",
+    ""event_code"": ""wabon"",
+    ""event_type"": 1,
+    ""event_type_string"": ""District"",
+    ""first_event_code"": ""WABON"",
+    ""first_event_id"": null,
+    ""gmaps_place_id"": ""ChIJfU3qX9_6kFQR1QMqEr9wwYQ"",
+    ""gmaps_url"": ""https://maps.google.com/?q=10920+199th+Ave+Ct+E,+Bonney+Lake,+WA+98391,+USA&ftid=0x5490fadf5fea4d7d:0x84c170bf122a03d5"",
+    ""key"": ""2023wabon"",
+    ""lat"": 47.1594537,
+    ""lng"": -122.1689707,
+    ""location_name"": ""10920 199th Ave Ct E"",
+    ""name"": ""PNW District Bonney Lake Event"",
+    ""parent_event_key"": null,
+    ""playoff_type"": 0,
+    ""playoff_type_string"": null,
+    ""postal_code"": ""98391"",
+    ""short_name"": ""Bonney Lake"",
+    ""start_date"": ""2023-04-01"",
+    ""state_prov"": ""WA"",
+    ""timezone"": ""America/Los_Angeles"",
+    ""webcasts"": [
+      {
+        ""channel"": ""firstinspires29"",
+        ""type"": ""twitch""
+      },
+      {
+        ""channel"": ""firstwa_blue2"",
+        ""type"": ""twitch""
+      }
+    ],
+    ""website"": ""http://www.firstwa.org"",
+    ""week"": 4,
+    ""year"": 2023
+  },
+  {
+    ""address"": ""100 140th Ave SE, Bellevue, WA 98005, USA"",
+    ""city"": ""Bellevue"",
+    ""country"": ""USA"",
+    ""district"": {
+      ""abbreviation"": ""pnw"",
+      ""display_name"": ""Pacific Northwest"",
+      ""key"": ""2023pnw"",
+      ""year"": 2023
+    },
+    ""division_keys"": [],
+    ""end_date"": ""2023-03-20"",
+    ""event_code"": ""wasam"",
+    ""event_type"": 1,
+    ""event_type_string"": ""District"",
+    ""first_event_code"": ""WASAM"",
+    ""first_event_id"": null,
+    ""gmaps_place_id"": ""ChIJK6TmhkhskFQRc_wHHFhZhPY"",
+    ""gmaps_url"": ""https://maps.google.com/?q=100+140th+Ave+SE,+Bellevue,+WA+98005,+USA&ftid=0x54906c4886e6a42b:0xf68459581c07fc73"",
+    ""key"": ""2023wasam"",
+    ""lat"": 47.6075876,
+    ""lng"": -122.1521427,
+    ""location_name"": ""100 140th Ave SE"",
+    ""name"": ""PNW District Sammamish Event"",
+    ""parent_event_key"": null,
+    ""playoff_type"": 0,
+    ""playoff_type_string"": null,
+    ""postal_code"": ""98005"",
+    ""short_name"": ""Sammamish"",
+    ""start_date"": ""2023-03-18"",
+    ""state_prov"": ""WA"",
+    ""timezone"": ""America/Los_Angeles"",
+    ""webcasts"": [
+      {
+        ""channel"": ""firstinspires29"",
+        ""type"": ""twitch""
+      },
+      {
+        ""channel"": ""firstwa_blue2"",
+        ""type"": ""twitch""
+      }
+    ],
+    ""website"": null,
+    ""week"": 2,
+    ""year"": 2023
+  },
+  {
+    ""address"": ""7401 144th Pl SE, Snohomish, WA 98296, USA"",
+    ""city"": ""Snohomish"",
+    ""country"": ""USA"",
+    ""district"": {
+      ""abbreviation"": ""pnw"",
+      ""display_name"": ""Pacific Northwest"",
+      ""key"": ""2023pnw"",
+      ""year"": 2023
+    },
+    ""division_keys"": [],
+    ""end_date"": ""2023-03-06"",
+    ""event_code"": ""wasno"",
+    ""event_type"": 1,
+    ""event_type_string"": ""District"",
+    ""first_event_code"": ""WASNO"",
+    ""first_event_id"": null,
+    ""gmaps_place_id"": ""ChIJERpkO8QHkFQRBFpv9Iy3wmk"",
+    ""gmaps_url"": ""https://maps.google.com/?q=7401+144th+Pl+SE,+Snohomish,+WA+98296,+USA&ftid=0x549007c43b641a11:0x69c2b78cf46f5a04"",
+    ""key"": ""2023wasno"",
+    ""lat"": 47.8679783,
+    ""lng"": -122.1332964,
+    ""location_name"": ""7401 144th Pl SE"",
+    ""name"": ""PNW District Glacier Peak Event"",
+    ""parent_event_key"": null,
+    ""playoff_type"": 0,
+    ""playoff_type_string"": null,
+    ""postal_code"": ""98296"",
+    ""short_name"": ""Glacier Peak"",
+    ""start_date"": ""2023-03-04"",
+    ""state_prov"": ""WA"",
+    ""timezone"": ""America/Los_Angeles"",
+    ""webcasts"": [
+      {
+        ""channel"": ""firstinspires29"",
+        ""type"": ""twitch""
+      },
+      {
+        ""channel"": ""firstwa_blue1"",
+        ""type"": ""twitch""
+      },
+      {
+        ""channel"": ""firstwa_blue2"",
+        ""type"": ""twitch""
+      }
+    ],
+    ""website"": ""http://www.firstwa.org/"",
+    ""week"": 0,
+    ""year"": 2023
+  },
+  
+  {
+    ""address"": ""Modern Living Building, 1301 S Fair Ave, Yakima, WA 98901, USA"",
+    ""city"": ""Yakima"",
+    ""country"": ""USA"",
+    ""district"": {
+      ""abbreviation"": ""pnw"",
+      ""display_name"": ""Pacific Northwest"",
+      ""key"": ""2023pnw"",
+      ""year"": 2023
+    },
+    ""division_keys"": [],
+    ""end_date"": ""2023-03-19"",
+    ""event_code"": ""wayak"",
+    ""event_type"": 1,
+    ""event_type_string"": ""District"",
+    ""first_event_code"": ""WAYAK"",
+    ""first_event_id"": null,
+    ""gmaps_place_id"": ""ChIJq_nzv8nXmVQRKPZPxoow2kY"",
+    ""gmaps_url"": ""https://maps.google.com/?q=Modern+Living+Building&ftid=0x5499d7c9bff3f9ab:0x46da308ac64ff628"",
+    ""key"": ""2023wayak"",
+    ""lat"": 46.5871659,
+    ""lng"": -120.4875881,
+    ""location_name"": ""Modern Living Building"",
+    ""name"": ""PNW District SunDome Event"",
+    ""parent_event_key"": null,
+    ""playoff_type"": 0,
+    ""playoff_type_string"": null,
+    ""postal_code"": ""98901"",
+    ""short_name"": ""SunDome"",
+    ""start_date"": ""2023-03-17"",
+    ""state_prov"": ""WA"",
+    ""timezone"": ""America/Los_Angeles"",
+    ""webcasts"": [
+      {
+        ""channel"": ""firstinspires28"",
+        ""type"": ""twitch""
+      },
+      {
+        ""channel"": ""firstwa_red2"",
+        ""type"": ""twitch""
+      }
+    ],
+    ""website"": ""http://www.firstwa.org/"",
+    ""week"": 2,
+    ""year"": 2023
+  }
+]";
+
     }
 }
+
+    
