@@ -131,6 +131,7 @@
             this.radioBtnQuarter.TabIndex = 2;
             this.radioBtnQuarter.Text = "Quarterfinal";
             this.radioBtnQuarter.UseVisualStyleBackColor = true;
+            this.radioBtnQuarter.Visible = false;
             this.radioBtnQuarter.CheckedChanged += new System.EventHandler(this.radioBtnMatchType_CheckedChanged);
             // 
             // radioBtnSemi
@@ -366,9 +367,9 @@
             // 
             // numFinalNo
             // 
-            this.numFinalNo.Location = new System.Drawing.Point(64, 68);
+            this.numFinalNo.Location = new System.Drawing.Point(78, 68);
             this.numFinalNo.Maximum = new decimal(new int[] {
-            4,
+            16,
             0,
             0,
             0});
@@ -392,9 +393,9 @@
             this.lblFinalNo.AutoSize = true;
             this.lblFinalNo.Location = new System.Drawing.Point(9, 70);
             this.lblFinalNo.Name = "lblFinalNo";
-            this.lblFinalNo.Size = new System.Drawing.Size(43, 13);
+            this.lblFinalNo.Size = new System.Drawing.Size(63, 13);
             this.lblFinalNo.TabIndex = 7;
-            this.lblFinalNo.Text = "Set No:";
+            this.lblFinalNo.Text = "Semi Match";
             this.lblFinalNo.Visible = false;
             // 
             // timerElapsed

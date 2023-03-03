@@ -69,7 +69,7 @@ namespace FIRSTWA_Recorder
         
         RestClient tbaClient = new RestClient("http://www.thebluealliance.com/api/v3");
         RestRequest tbaRequest;
-        private string TBAKEY;
+        private string TBAKEY = "9FjTZaWXf1rKVnPneSZlRUGSN5vq9VAH467lSZpxEZ69OtHy4YvvKB9qWbzueSu9";
 
         List<District> eventDistrict = new List<District>();
         List<Event> eventDetails = new List<Event>();
@@ -872,14 +872,16 @@ namespace FIRSTWA_Recorder
                         break;
                     case "Semifinal":
                         currentMatchType = MatchType.Semifinal;
-                        numMatchNumber.Maximum = 3;
-                        numFinalNo.Maximum = 2;
+                        numMatchNumber.Maximum = 200;
+                        numFinalNo.Maximum = 16;
+                        lblMatchNumber.Visible = false;
+                        numMatchNumber.Visible = false;
                         break;
                     case "Final":
                         currentMatchType = MatchType.Final;
                         lblFinalNo.Visible = false;
                         numFinalNo.Visible = false;
-                        numMatchNumber.Maximum = 3;
+                        numMatchNumber.Maximum = 4;
                         numFinalNo.Maximum = 1;
                         break;
                     case "Ceremony":
