@@ -42,8 +42,8 @@
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(596, 62);
             this.label1.TabIndex = 0;
-            this.label1.Text = "If something went wrong or you have a question,\r\ncall/text Joe Kelly at (503) 798" +
-    "-0860";
+            this.label1.Text = "If something went wrong or you have a question,\r\ncall/text Kevin Ross 206-920-096" +
+    "5";
             // 
             // button1
             // 

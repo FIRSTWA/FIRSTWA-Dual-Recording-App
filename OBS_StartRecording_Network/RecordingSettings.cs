@@ -5,7 +5,7 @@ namespace FIRSTWA_Recorder
 {
     public partial class RecordingSettings : Form
     {
-        public string Year { get; private set; } = "2020";
+        public string Year { get; private set; } = "2024";
         public string IPAddressPROGRAM { get; private set; } = @"192.168.100.35";
         public string IPAddressWIDE { get; private set; } = @"192.168.100.34";
         public string IPAddressPC { get; private set; } = @"192.168.100.70";

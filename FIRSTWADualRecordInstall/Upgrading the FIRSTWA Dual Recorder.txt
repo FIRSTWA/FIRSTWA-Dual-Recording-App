@@ -1,0 +1,19 @@
+Upgrading the FIRSTWA Dual Recorder app
+
+(Some changes to the installer were needed. Sorry if this is a little complex. Next update will be easier!)
+
+1) Start the existing FIRSTWA Dual Recorder application
+2) Open Settings->Recording
+3) Make a note of the IP addresses here, you will want to re enter them later
+4) Close the application
+5) The program needs to be uninstalled before installing the new version. In Settings -> Apps look up FIRSTWA Dual Recorder and uninstall it
+
+6) On the Onedrive for firstwacase59@outlook.com, find the FIRSTWADualRecorder install directory. Double click the FIRSTWADualRecordInstall.msi file
+7) Should have installed a new FIRSTWADualRecorder shortcut on your desktop. It is also in the Start Menu under FIRSTWA 
+8) Start the new program
+9) Go to Settings->Recording and reset the IP addresses from Step 2
+10) Right click the REC icon on the taskbar and do a pin to taskbar.
+
+Having an issue on my machine with the icon for the Dual recorder program. Will get it working.
+
+Kevin

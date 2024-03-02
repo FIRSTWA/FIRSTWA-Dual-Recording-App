@@ -50,10 +50,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestCertificateThumbprint>6CE6090CE86FFF8679C0FCBED688E4E2DBC2BAE4</ManifestCertificateThumbprint>
+    <ManifestCertificateThumbprint>BF5043CAA1DE384A74112CDC913C8AADCF936381</ManifestCertificateThumbprint>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestKeyFile>FIRSTWA-Dual-Recording-App_6_TemporaryKey.pfx</ManifestKeyFile>
+    <ManifestKeyFile>FIRSTWA-Dual-Recording-App_7_TemporaryKey.pfx</ManifestKeyFile>
   </PropertyGroup>
   <PropertyGroup>
     <GenerateManifests>true</GenerateManifests>
@@ -181,6 +181,7 @@
     <None Include="FIRSTWA-Dual-Recording-App_4_TemporaryKey.pfx" />
     <None Include="FIRSTWA-Dual-Recording-App_5_TemporaryKey.pfx" />
     <None Include="FIRSTWA-Dual-Recording-App_6_TemporaryKey.pfx" />
+    <None Include="FIRSTWA-Dual-Recording-App_7_TemporaryKey.pfx" />
     <None Include="FIRSTWA-Dual-Recording-App_TemporaryKey.pfx" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -231,7 +232,9 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="record.ico" />
+    <Content Include="record.ico">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

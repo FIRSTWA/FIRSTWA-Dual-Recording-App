@@ -22,8 +22,8 @@ namespace FIRSTWA_Recorder
         public string gmaps_place_id { get; set; }
         public string gmaps_url { get; set; }
         public string key { get; set; }
-        public double lat { get; set; }
-        public double lng { get; set; }
+        // public double lat { get; set; }
+       //  public double lng { get; set; }
         public string location_name { get; set; }
         public string name { get; set; }
         public object parent_event_key { get; set; }

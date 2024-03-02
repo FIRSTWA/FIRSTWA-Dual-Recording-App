@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.btnStartRecording = new System.Windows.Forms.Button();
             this.btnStopRecording = new System.Windows.Forms.Button();
             this.radioBtnQual = new System.Windows.Forms.RadioButton();
@@ -77,7 +78,6 @@
             this.btnShowYT = new System.Windows.Forms.Button();
             this.btnTempAccess = new System.Windows.Forms.Button();
             this.checkYTPopup = new System.Windows.Forms.CheckBox();
-            this.checkHackData = new System.Windows.Forms.CheckBox();
             this.groupMatchTypes.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numMatchNumber)).BeginInit();
             this.menuStrip1.SuspendLayout();
@@ -259,8 +259,8 @@
             // version001ToolStripMenuItem
             // 
             this.version001ToolStripMenuItem.Name = "version001ToolStripMenuItem";
-            this.version001ToolStripMenuItem.Size = new System.Drawing.Size(111, 20);
-            this.version001ToolStripMenuItem.Text = "Version 2023.0301";
+            this.version001ToolStripMenuItem.Size = new System.Drawing.Size(138, 20);
+            this.version001ToolStripMenuItem.Text = "Version 2024.0301.1755";
             this.version001ToolStripMenuItem.Click += new System.EventHandler(this.version001ToolStripMenuItem_Click);
             // 
             // helpToolStripMenuItem
@@ -281,7 +281,6 @@
             // 
             // groupEvent
             // 
-            this.groupEvent.Controls.Add(this.checkHackData);
             this.groupEvent.Controls.Add(this.comboEventName);
             this.groupEvent.Controls.Add(this.chkRecordWide);
             this.groupEvent.Controls.Add(this.chkProgramRecord);
@@ -582,17 +581,6 @@
             this.checkYTPopup.UseVisualStyleBackColor = true;
             this.checkYTPopup.CheckedChanged += new System.EventHandler(this.checkYTPopup_CheckedChanged);
             // 
-            // checkHackData
-            // 
-            this.checkHackData.AutoSize = true;
-            this.checkHackData.Location = new System.Drawing.Point(274, 54);
-            this.checkHackData.Name = "checkHackData";
-            this.checkHackData.Size = new System.Drawing.Size(112, 17);
-            this.checkHackData.TabIndex = 13;
-            this.checkHackData.Text = "Hack Event Data!";
-            this.checkHackData.UseVisualStyleBackColor = true;
-            this.checkHackData.CheckedChanged += new System.EventHandler(this.checkHackData_CheckedChanged);
-            // 
             // MainForm
             // 
             this.AcceptButton = this.btnStartRecording;
@@ -619,11 +607,12 @@
             this.Controls.Add(this.btnStartRecording);
             this.Controls.Add(this.menuStrip1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
             this.MaximizeBox = false;
             this.Name = "MainForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "FIRSTWA Recording";
+            this.Text = "FIRSTWADualRecorder";
             this.groupMatchTypes.ResumeLayout(false);
             this.groupMatchTypes.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numMatchNumber)).EndInit();
@@ -690,7 +679,6 @@
         private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
         private System.Windows.Forms.Button btnTempAccess;
         private System.Windows.Forms.CheckBox checkYTPopup;
-        private System.Windows.Forms.CheckBox checkHackData;
     }
 }
 

@@ -141,7 +141,7 @@
             0,
             0});
             this.numYear.Minimum = new decimal(new int[] {
-            2019,
+            2020,
             0,
             0,
             0});
@@ -149,7 +149,7 @@
             this.numYear.Size = new System.Drawing.Size(120, 20);
             this.numYear.TabIndex = 11;
             this.numYear.Value = new decimal(new int[] {
-            2020,
+            2024,
             0,
             0,
             0});

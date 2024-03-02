@@ -6,11 +6,11 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("FIRSTWADualRecorder")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("FIRSTWA Blackmagic Recorder")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("FIRSTWA")]
 [assembly: AssemblyProduct("FIRSTWADualRecorder")]
-[assembly: AssemblyCopyright("Copyright ©  2023 FIRSTWA")]
+[assembly: AssemblyCopyright("Copyright ©  2024 FIRSTWA")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -32,5 +32,5 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("20.23.0302.9")]
-[assembly: AssemblyFileVersion("20.23.0302.9")]
+[assembly: AssemblyVersion("20.24.0301.05")]
+[assembly: AssemblyFileVersion("20.24.0301.05")]
