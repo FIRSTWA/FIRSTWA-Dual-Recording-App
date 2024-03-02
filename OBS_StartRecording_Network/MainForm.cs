@@ -175,14 +175,39 @@ namespace FIRSTWA_Recorder
             IRestResponse tbaResponse = tbaClient.Execute(tbaRequest);
             tbaContent = tbaResponse.Content;
             tbaContent = tbaContent.Trim('"');
+
+            //
+            // TBA has in the past sent us incomplete or invalid data 
+            // That causes an exception and was crashing this program
+            // Do the following in a try catch
+            //
+
+            try 
+            {
+                eventDistrict = JsonConvert.DeserializeObject<List<District>>(tbaContent);
+            }
+            catch (Exception ex)
+            { 
             
+               MessageBox.Show("TBA District Data Exception: " + ex.HResult.ToString());
+
+            }
+            try
+            {
+                eventDetails = JsonConvert.DeserializeObject<List<Event>>(tbaContent);
+            }
+            catch (Exception ex)
+            { 
+
+               MessageBox.Show("TBA Event Data Exception" + ex.HResult.ToString());
+
+            }
+
+
+
 
 
             
-
-
-            eventDistrict = JsonConvert.DeserializeObject<List<District>>(tbaContent);
-            eventDetails = JsonConvert.DeserializeObject<List<Event>>(tbaContent);
 
             // clear out anything that is already there
 
